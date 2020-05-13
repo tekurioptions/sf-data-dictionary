@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+  padding: 7px;
+}
+
+.backdrop {
+  z-index: 10000 !important;
+}
+
+.table-button {
+  margin: 2px !important;
+  display: inline-block;
+}
+
+Link {
+  text-decoration: none;
+}

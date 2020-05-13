@@ -1,0 +1,21 @@
+.picklist-cell {
+  word-break: break-word;
+  max-width: 350px;
+}
+
+.inline-help-cell {
+  max-width: 350px;
+}
+
+.table-div {
+  height: 75vh;
+}
+
+.table-container {
+  height: 100%;
+}
+
+.table {
+  height: 100%;
+  min-width: 2500px;
+}
