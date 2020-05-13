@@ -2,9 +2,7 @@ import axios from "axios";
 import {saveAs}  from "file-saver";
 import fs from "fs";
 import moment from "moment";
-// import config from '../../../../config';
 
-// axios.defaults.baseURL = config.baseUrl + config.port;
 var loc = window.location;
 axios.defaults.baseURL = loc.protocol + "//" + loc.host + "/" + loc.pathname.split('/')[1];
 
