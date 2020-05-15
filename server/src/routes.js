@@ -4,7 +4,7 @@ const db = require("./sequelize");
 const ddService = require("./data-dictionary-service");
 const excelBuilder = require("./excel-builder");
 const logger = require("./logger");
-const config = require('../../config');
+const config = require('../../../config');
 
 // Loads routes on the given express app.
 function loadRoutes(app, cb) {

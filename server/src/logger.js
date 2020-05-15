@@ -4,7 +4,7 @@ const {
   format,
   transports,
 } = require('winston');
-const config = require('../../config');
+const config = require('../../../config');
 
 const logFormat = format.printf(({ level, message }) => `${level}: ${JSON.stringify(message, null, 2)}`);
 

@@ -1,11 +1,11 @@
 const express = require('express');
-const config = require('../config');
+const config = require('../../config');
 const logger = require('./src/logger');
 
 
 const app = express();
 
-logger.debug(require('../config'));
+logger.debug(require('../../config'));
 
 /*
   This app.use is just for debugging and if you want a default user.

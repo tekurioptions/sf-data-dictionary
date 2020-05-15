@@ -7,7 +7,7 @@ const exportColumnsConfig = require("./export-columns-config");
 const crud = require("./crud");
 const Sequelize = require("sequelize");
 const db = require("./sequelize");
-const config = require('../../config');
+const config = require('../../../config');
 
 var oauth2;
 
