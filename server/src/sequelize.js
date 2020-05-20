@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const readdirSync = require('fs').readdirSync;
 const tablesPath = require('path').join(__dirname, '../models/tables');
-const viewsPath = require('path').join(__dirname, '../models/views');
 const config = require('../../../config');
 const logger = require('./logger');
 
