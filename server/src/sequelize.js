@@ -16,14 +16,6 @@ readdirSync(tablesPath).forEach((file) => {
   models[modelName] = require(`${tablesPath}/${file}`).init(sequelize, Sequelize);
 });
 
-// Load Views
-readdirSync(viewsPath).forEach((file) => {
-  const modelName = file.replace('.js', '');
-  logger.info(`Initializing model for view ${modelName}`);
-
-  models[modelName] = require(`${viewsPath}/${file}`).init(sequelize, Sequelize);
-});
-
 // Associate Models
 Object.values(models)
   .filter((model) => model.associate)
