@@ -26,6 +26,7 @@
     "eslint-plugin-import": "^2.16.0"
   },
   "scripts": {
-    "start": "node sf-data-dictionary.js"
+    "start": "node sf-data-dictionary.js",
+    "debug": "node  --inspect=0.0.0.0:9229 sf-data-dictionary.js"
   }
 }

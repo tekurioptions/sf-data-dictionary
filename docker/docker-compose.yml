@@ -28,8 +28,7 @@ services:
       - ../public:/home/node/sf-data-dictionary/public
       - ./config/config.js:/home/node/config.js
     working_dir: /home/node/sf-data-dictionary/server
-    entrypoint: ["npm", "run", "start"]
+    entrypoint: ["npm", "run", "debug"]
 
 volumes:
   portainer_data:
-  minio_data:
