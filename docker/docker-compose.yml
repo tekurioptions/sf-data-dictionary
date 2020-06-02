@@ -1,0 +1,35 @@
+version: "3"
+services:
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock --no-auth
+    restart: always
+    ports:
+      - 9000:9000
+      - 8000:8000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+  sf-data-dictionary-client-dev:
+    image: node:12
+    ports:
+      - 3000:3000
+    volumes:
+      - ../client:/home/node/sf-data-dictionary/client
+    working_dir: /home/node/sf-data-dictionary/client
+    entrypoint: ["npm", "run", "start"]
+  sf-data-dictionary-server-dev:
+    image: node:12
+    ports:
+      - 32154:32154
+      - 9229:9229
+    volumes:
+      - ../server:/home/node/sf-data-dictionary/server
+      - ../public:/home/node/sf-data-dictionary/public
+      - ./config/config.js:/home/node/config.js
+    working_dir: /home/node/sf-data-dictionary/server
+    entrypoint: ["npm", "run", "start"]
+
+volumes:
+  portainer_data:
+  minio_data:
