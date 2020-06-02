@@ -6,7 +6,7 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Checkbox
+  Checkbox,
 } from "@material-ui/core";
 
 class ObjectSearch extends React.Component {
@@ -14,7 +14,7 @@ class ObjectSearch extends React.Component {
     super(props);
     this.state = {
       selectedObjects: this.props.selectedObjects,
-      searchObjects: this.props.availableObjects
+      searchObjects: this.props.availableObjects,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSelection = this.handleSelection.bind(this);
@@ -23,10 +23,12 @@ class ObjectSearch extends React.Component {
   componentDidMount() {
     // If updating connection there are already selected objects, format these to original object values to remain selected in list
     if (this.state.selectedObjects.length > 0) {
-      let x = this.state.selectedObjects.map(y => {
-        return this.props.availableObjects.find(z => z.name === y.object_api_name)
+      let x = this.state.selectedObjects.map((y) => {
+        return this.props.availableObjects.find(
+          (z) => z.name === y.object_api_name
+        );
       });
-      this.setState({selectedObjects: x});
+      this.setState({ selectedObjects: x });
     }
   }
 
@@ -35,9 +37,9 @@ class ObjectSearch extends React.Component {
     let searchCriteria = event.target.value;
     if (event.target.value.length > 0) {
       this.setState({
-        searchObjects: this.props.availableObjects.filter(x =>
+        searchObjects: this.props.availableObjects.filter((x) =>
           x.name.toLowerCase().includes(searchCriteria.toLowerCase())
-        )
+        ),
       });
     } else {
       this.setState({ searchObjects: this.props.availableObjects });
@@ -47,14 +49,14 @@ class ObjectSearch extends React.Component {
   handleSelection(event) {
     // Using object name to find and filter as this is the unique value on the object
     let object = this.state.searchObjects.find(
-      x => x.name === event.target.value
+      (x) => x.name === event.target.value
     );
     if (this.state.selectedObjects.indexOf(object) > -1) {
       // Object is already selected, filtering out
       this.setState(
-        state => {
+        (state) => {
           const selectedObjects = state.selectedObjects.filter(
-            x => x.name !== object.name
+            (x) => x.name !== object.name
           );
           return { selectedObjects };
         },
@@ -65,7 +67,7 @@ class ObjectSearch extends React.Component {
     } else {
       // Object is not selected, adding to array
       this.setState(
-        state => {
+        (state) => {
           const selectedObjects = state.selectedObjects.concat(object);
           return { selectedObjects };
         },
@@ -93,12 +95,7 @@ class ObjectSearch extends React.Component {
             {this.state.searchObjects.map((x, i) => {
               const labelId = `checkbox-list-label-${i}`;
               return (
-                <ListItem
-                  key={x.name}
-                  dense
-                  button
-                  onClick={this.handleSelection}
-                >
+                <ListItem key={x.name} dense button>
                   <ListItemIcon>
                     <Checkbox
                       edge="start"
@@ -107,6 +104,7 @@ class ObjectSearch extends React.Component {
                       disableRipple
                       value={x.name}
                       inputProps={{ "aria-labelledby": labelId }}
+                      onClick={this.handleSelection}
                     />
                     <ListItemText id={labelId} primary={x.name} />
                   </ListItemIcon>
