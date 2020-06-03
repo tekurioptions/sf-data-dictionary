@@ -70,11 +70,12 @@ async function oauthAuthorize(req) {
   });
 }
 
-async function getOrgObjects(orgId) {
-  logger.info("Fetching objects org id");
-  let orgConfig = await db.models["Connections"].findByPk(orgId);
-  logger.info("Fetching objects from Salesforce");
-  var conn = new jsforce.Connection({
+const getConn = async (orgId) => {
+  // Get connection info from db
+  const orgConfig = await db.models["Connections"].findByPk(orgId);
+
+  // Create connection
+  const conn = new jsforce.Connection({
     oauth2: {
       clientId: config.db.clientId,
       clientSecret: config.db.clientSecret,
@@ -84,7 +85,20 @@ async function getOrgObjects(orgId) {
     accessToken: orgConfig.access_token,
     refreshToken: orgConfig.refresh_token,
   });
-  return await conn.describeGlobal();
+
+  // Instruct db write-back on refresh
+  conn.on("refresh", (accessToken, res) => {
+    orgConfig.access_token = accessToken;
+    orgConfig.save();
+  });
+
+  return conn;
+};
+
+async function getOrgObjects(orgId) {
+  logger.info("Fetching objects org id");
+  const conn = await getConn(orgId);
+  return conn.describeGlobal();
 }
 
 /**
@@ -105,16 +119,8 @@ async function createNewFieldMap(orgId) {
       ],
     });
     logger.info("Creating new field map");
-    var conn = new jsforce.Connection({
-      oauth2: {
-        clientId: config.db.clientId,
-        clientSecret: config.db.clientSecret,
-        redirectUri: `${config.baseUrl}/api/oauth-response`,
-      },
-      instanceUrl: orgConfig.login_url,
-      accessToken: orgConfig.access_token,
-      refreshToken: orgConfig.refresh_token,
-    });
+    const conn = await getConn(orgId);
+
     var dd = new DataDictionary();
     var process = [
       async.apply(dd.buildMetaDataQuery, orgConfig, conn),
