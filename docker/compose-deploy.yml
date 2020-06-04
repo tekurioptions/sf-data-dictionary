@@ -1,0 +1,8 @@
+version: "3"
+services:
+  portainer:
+    image: sf-data-dictionary
+    ports:
+      - 32155:32154
+    volumes:
+      - ./config/config.js:/home/node/config.js

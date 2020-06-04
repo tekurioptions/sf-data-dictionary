@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Client (Debugger for Chrome)",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/client",
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+                "/home/node/sf-data-dictionary/client/*": "${workspaceFolder}/client/*"
+            }
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Server (Attach)",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}/server",
+            "remoteRoot": "/home/node/sf-data-dictionary/server",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "preLaunchTask": "Restart Server"
+        }
+    ]
+}

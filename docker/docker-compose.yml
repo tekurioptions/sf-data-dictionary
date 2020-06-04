@@ -15,8 +15,8 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ../client:/home/node/sf-data-dictionary/client
-    working_dir: /home/node/sf-data-dictionary/client
+      - ../client:/home/node/client
+    working_dir: /home/node/client
     entrypoint: ["npm", "run", "start"]
   sf-data-dictionary-server-dev:
     image: node:12
@@ -24,10 +24,10 @@ services:
       - 32154:32154
       - 9229:9229
     volumes:
-      - ../server:/home/node/sf-data-dictionary/server
-      - ../public:/home/node/sf-data-dictionary/public
+      - ../server:/home/node/server
+      - ../public:/home/node/public
       - ./config/config.js:/home/node/config.js
-    working_dir: /home/node/sf-data-dictionary/server
+    working_dir: /home/node/server
     entrypoint: ["npm", "run", "debug"]
 
 volumes:
