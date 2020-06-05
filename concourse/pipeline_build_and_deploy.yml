@@ -68,12 +68,7 @@ resources:
         username: ((concourse-email.username))
         password: ((concourse-email.password))
       from: atran@candoris.com
-      to:
-        [
-          "atran@candoris.com",
-          "aviettran@gmail.com",
-          "79548233.CandorisTech.onmicrosoft.com@amer.teams.ms",
-        ]
+      to: ["79548233.CandorisTech.onmicrosoft.com@amer.teams.ms"]
 
 jobs:
   - name: build
@@ -97,12 +92,12 @@ jobs:
       put: send-an-email
       params:
         subject_text: "Build finished: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}"
-        body_text: "Build finished: ${ATC_EXTERNAL_URL}/teams/main/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
+        body_text: "Build finished: ${ATC_EXTERNAL_URL}/teams/candoris/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
     on_failure:
       put: send-an-email
       params:
         subject_text: "Build errored: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}"
-        body_text: "Build errored: ${ATC_EXTERNAL_URL}/teams/main/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
+        body_text: "Build errored: ${ATC_EXTERNAL_URL}/teams/candoris/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
 
   - name: deploy dev
     serial: true
