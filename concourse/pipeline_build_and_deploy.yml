@@ -1,0 +1,186 @@
+resource_types:
+  - name: helm
+    type: docker-image
+    source:
+      repository: typositoire/concourse-helm3-resource
+
+  - name: email
+    type: docker-image
+    source:
+      repository: pcfseceng/email-resource
+
+resources:
+  - name: sf-data-dictionary-git
+    type: git
+    source:
+      uri: git@github.com:candoris/sf-data-dictionary.git
+      branch: dev
+      private_key: |
+        ((concourse-github.privateKey))
+
+  - name: version
+    type: semver
+    source:
+      driver: git
+      uri: git@github.com:Candoris/candoris-helm-charts.git
+      branch: dev
+      file: sf-data-dictionary/version
+      private_key: |
+        ((concourse-github.privateKey))
+
+  - name: sf-data-dictionary-container
+    type: docker-image
+    source:
+      repository: registry.candoris.com/candoris/sf-data-dictionary
+      username: ((concourse-registry.username))
+      password: ((concourse-registry.password))
+
+  - name: candoris-helm-charts-git
+    type: git
+    source:
+      uri: git@github.com:Candoris/candoris-helm-charts.git
+      branch: dev
+      private_key: |
+        ((concourse-github.privateKey))
+
+  - name: candoris-kubernetes-provisioning-git
+    type: git
+    source:
+      uri: git@github.com:Candoris/candoris-kubernetes-provisioning.git
+      branch: dev
+      private_key: |
+        ((concourse-github.privateKey))
+
+  - name: sf-data-dictionary-helm
+    type: helm
+    source:
+      release: sf-data-dictionary
+      cluster_url: ((concourse-helm-token.cluster_url))
+      token: ((concourse-helm-token.token))
+      cluster_ca: ((concourse-helm-token.cacrt))
+
+  - name: send-an-email
+    type: email
+    source:
+      smtp:
+        host: ((concourse-email.host))
+        port: "((concourse-email.port))"
+        username: ((concourse-email.username))
+        password: ((concourse-email.password))
+      from: atran@candoris.com
+      to:
+        [
+          "atran@candoris.com",
+          "aviettran@gmail.com",
+          "79548233.CandorisTech.onmicrosoft.com@amer.teams.ms",
+        ]
+
+jobs:
+  - name: build
+    serial: true
+    plan:
+      - get: sf-data-dictionary-git
+        trigger: true
+      - get: version
+        params:
+          pre: build
+      - put: sf-data-dictionary-container
+        params:
+          build: sf-data-dictionary-git
+          dockerfile: sf-data-dictionary-git/docker/Dockerfile
+          tag_file: version/number
+          tag_as_latest: true
+      - put: version
+        params:
+          file: version/number #necessary when get/put step are separate
+    on_success:
+      put: send-an-email
+      params:
+        subject_text: "Build finished: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}"
+        body_text: "Build finished: ${ATC_EXTERNAL_URL}/teams/main/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
+    on_failure:
+      put: send-an-email
+      params:
+        subject_text: "Build errored: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}"
+        body_text: "Build errored: ${ATC_EXTERNAL_URL}/teams/main/pipelines/${BUILD_PIPELINE_NAME}/jobs/${BUILD_JOB_NAME}/builds/${BUILD_NAME}"
+
+  - name: deploy dev
+    serial: true
+    plan:
+      - get: version
+        passed: [build]
+        trigger: true
+      - get: candoris-helm-charts-git
+      - get: candoris-kubernetes-provisioning-git
+      - put: sf-data-dictionary-helm
+        params:
+          chart: candoris-helm-charts-git/sf-data-dictionary
+          namespace: d-sf-data-dictionary
+          values: candoris-kubernetes-provisioning-git/config/d-sf-data-dictionary.yaml
+          override_values:
+            - key: image.tag
+              path: version/number
+
+  # Explanation:
+  # Each resource has a single set of destination files, so a docker-image resource can only refer to a single built docker container. Each job
+  # needs to do its own "get", however, so in this instance, we get the docker image and save it so that the put step can "load" it before
+  # retagging and repushing. The put step has an implicit "get" which follows, which is visible when reviewing the job execution.
+  - name: deploy to qa
+    serial: true
+    plan:
+      - get: sf-data-dictionary-container
+        params:
+          save: true
+      - get: version
+        passed: ["deploy dev"]
+        params:
+          bump: final
+      - put: sf-data-dictionary-container
+        params:
+          load: sf-data-dictionary-container
+          tag_file: version/number
+      - put: version
+        params:
+          file: version/number
+      - get: candoris-helm-charts-git
+      - get: candoris-kubernetes-provisioning-git
+      - put: sf-data-dictionary-helm
+        params:
+          chart: candoris-helm-charts-git/sf-data-dictionary
+          namespace: a-sf-data-dictionary
+          values: candoris-kubernetes-provisioning-git/config/a-sf-data-dictionary.yaml
+          override_values:
+            - key: image.tag
+              path: version/number
+
+  - name: release
+    serial: true
+    plan:
+      - get: version
+        passed: ["deploy to qa"]
+      - get: sf-data-dictionary-git
+      - put: sf-data-dictionary-git
+        params:
+          repository: sf-data-dictionary-git
+          tag: version/number
+          only_tag: true
+          tag_prefix: v
+
+  - name: deploy to prod
+    serial: true
+    plan:
+      - get: version
+        passed: ["release"]
+      - get: candoris-helm-charts-git
+      - get: candoris-kubernetes-provisioning-git
+      - put: sf-data-dictionary-helm
+        params:
+          chart: candoris-helm-charts-git/sf-data-dictionary
+          namespace: p-sf-data-dictionary
+          values: candoris-kubernetes-provisioning-git/config/p-sf-data-dictionary.yaml
+          override_values:
+            - key: image.tag
+              path: version/number
+      - put: version
+        params:
+          bump: minor
