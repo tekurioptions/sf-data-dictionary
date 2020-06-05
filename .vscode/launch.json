@@ -18,7 +18,7 @@
             "name": "Server (Attach)",
             "port": 9229,
             "localRoot": "${workspaceFolder}/server",
-            "remoteRoot": "/home/node/sf-data-dictionary/server",
+            "remoteRoot": "/home/node/server",
             "skipFiles": [
                 "<node_internals>/**"
             ],

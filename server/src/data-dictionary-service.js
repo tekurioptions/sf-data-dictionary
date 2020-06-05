@@ -80,6 +80,7 @@ const getConn = async (orgId) => {
       clientId: config.db.clientId,
       clientSecret: config.db.clientSecret,
       redirectUri: `${config.baseUrl}/api/oauth-response`,
+      loginUrl: orgConfig.login_url,
     },
     instanceUrl: orgConfig.login_url,
     accessToken: orgConfig.access_token,
