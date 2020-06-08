@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Paper
+  Paper,
 } from "@material-ui/core";
 import "./dataTable.css";
 
@@ -19,7 +19,7 @@ class DataTable extends React.Component {
       data:
         this.props.data && this.props.data.length > 0 ? this.props.data : null,
       newId: null,
-      newValue: null
+      newValue: null,
     };
     this.handleChange = this.debounceChange.bind(this);
   }
@@ -42,13 +42,13 @@ class DataTable extends React.Component {
     let split = id.split(" ");
     httpPut("/api/CustomFields", {
       id: split[1],
-      [split[0]]: value
+      [split[0]]: value,
     }).then(
-      result => {
+      (result) => {
         this.setState({ debouncedId: id, debouncedValue: value });
         this.props.handleSnack("success", "Custom field saved");
       },
-      err => {
+      (err) => {
         this.props.handleSnack("error", "Error saving custom field");
       }
     );
@@ -65,7 +65,7 @@ class DataTable extends React.Component {
             size="small"
           >
             <TableHead>
-              <TableRow  hover>
+              <TableRow hover>
                 <TableCell align="left">Label</TableCell>
                 <TableCell align="left">Name</TableCell>
                 <TableCell align="left">Type</TableCell>
@@ -111,6 +111,7 @@ class DataTable extends React.Component {
                           : null
                       }
                       onChange={this.handleChange}
+                      autoFocus={false}
                     />
                   </TableCell>
                   <TableCell>
@@ -128,6 +129,7 @@ class DataTable extends React.Component {
                           : null
                       }
                       onChange={this.handleChange}
+                      autoFocus={false}
                     />
                   </TableCell>
                   <TableCell>
@@ -145,6 +147,7 @@ class DataTable extends React.Component {
                           : null
                       }
                       onChange={this.handleChange}
+                      autoFocus={false}
                     />
                   </TableCell>
                 </TableRow>

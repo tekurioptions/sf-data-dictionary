@@ -1,0 +1,10 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Restart Server",
+            "type": "shell",
+            "command": "docker-compose -f docker/docker-compose.yml up -d --force-recreate sf-data-dictionary-server-dev"
+        }
+    ]
+}

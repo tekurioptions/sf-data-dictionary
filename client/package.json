@@ -34,6 +34,7 @@
     "eslint-plugin-react": "7.18.0",
     "eslint-plugin-react-hooks": "^1.6.1",
     "file-loader": "4.3.0",
+    "file-saver": "^2.0.2",
     "fs-extra": "^8.1.0",
     "html-webpack-plugin": "4.0.0-beta.11",
     "identity-obj-proxy": "3.0.0",
@@ -41,7 +42,6 @@
     "jest-environment-jsdom-fourteen": "1.0.1",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
-    "file-saver": "^2.0.2",
     "mini-css-extract-plugin": "0.9.0",
     "moment": "^2.18.1",
     "msexcel-builder-colorfix": "0.0.3",
@@ -54,7 +54,7 @@
     "postcss-safe-parser": "4.0.1",
     "react": "^16.12.0",
     "react-app-polyfill": "^1.0.6",
-    "react-dev-utils": "^10.1.0",
+    "react-dev-utils": "^10.0.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^4.2.2",
     "resolve": "1.15.0",
@@ -144,5 +144,6 @@
     "presets": [
       "react-app"
     ]
-  }
+  },
+  "proxy": "http://sf-data-dictionary-server-dev:32154"
 }

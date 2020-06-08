@@ -1,11 +1,10 @@
-const express = require('express');
-const config = require('../../config');
-const logger = require('./src/logger');
-
+const express = require("express");
+const config = require("../config");
+const logger = require("./src/logger");
 
 const app = express();
 
-logger.debug(require('../../config'));
+logger.debug(require("../config"));
 
 /*
   This app.use is just for debugging and if you want a default user.
@@ -24,27 +23,35 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(require('helmet')());
+app.use(require("helmet")());
 
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: "50mb" }));
 
 async function run() {
-  
-  await require('./src/routes').async(app);
+  await require("./src/routes").async(app);
 
-  app.use(express.static('../public'));
-  app.get('/*', (req, res) => {
-    res.sendFile('../public/index.html');
+  app.use(express.static("../public"));
+  app.get("/*", (req, res) => {
+    res.sendFile("../public/index.html");
   });
 
   app.listen(config.port);
 
   process
-    .on('unhandledRejection', (reason, p) => {
-      logger.error((new Date()).toUTCString(), reason, 'Unhandled Rejection at Promise', p);
+    .on("unhandledRejection", (reason, p) => {
+      logger.error(
+        new Date().toUTCString(),
+        reason,
+        "Unhandled Rejection at Promise",
+        p
+      );
     })
-    .on('uncaughtException', (err) => {
-      logger.error((new Date()).toUTCString(), err.stack || err, 'Uncaught Exception thrown');
+    .on("uncaughtException", (err) => {
+      logger.error(
+        new Date().toUTCString(),
+        err.stack || err,
+        "Uncaught Exception thrown"
+      );
       process.exit(13);
     });
 }

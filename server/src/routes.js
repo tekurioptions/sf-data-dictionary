@@ -4,7 +4,7 @@ const db = require("./sequelize");
 const ddService = require("./data-dictionary-service");
 const excelBuilder = require("./excel-builder");
 const logger = require("./logger");
-const config = require('../../../config');
+const config = require("../../config");
 
 // Loads routes on the given express app.
 function loadRoutes(app, cb) {
@@ -38,10 +38,12 @@ function loadRoutes(app, cb) {
   app.get("/api/oauth-response", async function (req, res) {
     ddService.oauthAuthorize(req).then(
       (result) => {
-        setTimeout(() => {res.redirect(config.baseUrl + config.port)}, 1000);
+        setTimeout(() => {
+          res.redirect(config.baseUrl);
+        }, 1000);
       },
       (err) => {
-        res.redirect(config.baseUrl + config.port);
+        res.redirect(config.baseUrl);
       }
     );
   });

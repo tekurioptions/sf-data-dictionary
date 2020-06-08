@@ -1,0 +1,11 @@
+version: "3"
+services:
+  init:
+    image: node:12
+    volumes:
+      - ../server:/home/node/server
+      - ../client:/home/node/client
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - "cd /home/node/server && npm install && cd /home/node/client && npm install"
